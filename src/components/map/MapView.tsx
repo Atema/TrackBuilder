@@ -17,8 +17,6 @@ import {
 import { bgMapStyle } from "./styles/bg-style";
 
 const onMapClick = (e: MapMouseEvent) => {
-  console.log(e.features);
-
   addLocation(e.lngLat.lng, e.lngLat.lat);
 };
 

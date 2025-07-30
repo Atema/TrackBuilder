@@ -31,4 +31,5 @@ body {
 
 .listView {
   flex: 0 0 30em;
+  overflow: auto;
 }

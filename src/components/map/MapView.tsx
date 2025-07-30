@@ -1,16 +1,24 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
+  Layer,
   Map,
   MapMouseEvent,
   MapRef,
   NavigationControl,
+  Source,
 } from "react-map-gl/maplibre";
 
 import { useRef } from "preact/hooks";
+import {
+  addLocation,
+  locationsGeoJson,
+  locationsGeoJsonLine,
+} from "../../state/locations";
 import { bgMapStyle } from "./styles/bg-style";
-import { addLocation } from "../../state/locations";
 
 const onMapClick = (e: MapMouseEvent) => {
+  console.log(e.features);
+
   addLocation(e.lngLat.lng, e.lngLat.lat);
 };
 
@@ -27,8 +35,22 @@ export const MapView = () => {
         zoom: 7.5,
       }}
       onClick={onMapClick}
+      interactiveLayerIds={["loc-points"]}
     >
       <NavigationControl />
+
+      <Source id="lines" type="geojson" data={locationsGeoJsonLine.value}>
+        <Layer id="loc-line" type="line" />
+      </Source>
+
+      <Source
+        id="locs"
+        type="geojson"
+        promoteId="id"
+        data={locationsGeoJson.value}
+      >
+        <Layer id="loc-points" type="circle" />
+      </Source>
     </Map>
   );
 };

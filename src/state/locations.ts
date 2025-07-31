@@ -1,19 +1,14 @@
 import { computed, signal } from "@preact/signals";
 import { FeatureCollection, LineString, Point } from "geojson";
 
-type Loc = {
+export type Location = {
   type: "loc";
-  id: `${string}-${string}-${string}-${string}-${string}`;
+  id: string;
   lat: number;
   lon: number;
 };
 
-type Cursor = {
-  type: "cursor";
-  insert: "above" | "below";
-};
-
-export const locations = signal<Loc[]>([]);
+export const locations = signal<Location[]>([]);
 
 export const locationsGeoJson = computed<FeatureCollection<Point>>(() => ({
   type: "FeatureCollection",
@@ -55,4 +50,8 @@ export const addLocation = (lon: number, lat: number) => {
       lon,
     },
   ];
+};
+
+export const removeLocation = (id: string) => {
+  locations.value = locations.value.filter((loc) => loc.id != id);
 };

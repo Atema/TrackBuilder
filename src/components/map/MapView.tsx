@@ -13,11 +13,20 @@ import {
   addLocation,
   locationsGeoJson,
   locationsGeoJsonLine,
+  removeLocation,
 } from "../../state/locations";
 import { bgMapStyle } from "./styles/bg-style";
 
 const onMapClick = (e: MapMouseEvent) => {
   addLocation(e.lngLat.lng, e.lngLat.lat);
+};
+
+const onMapRightClick = (e: MapMouseEvent) => {
+  if (!e.features?.length || e.features[0].source != "locs") {
+    return;
+  }
+
+  removeLocation(e.features[0].id as string);
 };
 
 export const MapView = () => {
@@ -33,6 +42,7 @@ export const MapView = () => {
         zoom: 7.5,
       }}
       onClick={onMapClick}
+      onContextMenu={onMapRightClick}
       interactiveLayerIds={["loc-points"]}
     >
       <NavigationControl />

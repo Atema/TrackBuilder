@@ -1,6 +1,6 @@
 import { MapProvider } from "react-map-gl/maplibre";
 import style from "./App.module.css";
-import { LocationsList } from "./LocationsList";
+import { LocationsList } from "./list/LocationsList";
 import { MapView } from "./map/MapView";
 
 export const App = () => (

@@ -8,7 +8,8 @@ import {
   Source,
 } from "react-map-gl/maplibre";
 
-import { useRef } from "preact/hooks";
+import { useRef, useEffect, useCallback } from "preact/hooks";
+import { hoverLocation } from "../../state/hover";
 import {
   addLocation,
   locationsGeoJson,
@@ -22,15 +23,27 @@ const onMapClick = (e: MapMouseEvent) => {
 };
 
 const onMapRightClick = (e: MapMouseEvent) => {
-  if (!e.features?.length || e.features[0].source != "locs") {
-    return;
+  if (e.features?.length && e.features[0].source == "locs") {
+    removeLocation(e.features[0].id as string);
   }
+};
 
-  removeLocation(e.features[0].id as string);
+const onMapHover = (e: MapMouseEvent, map: MapRef) => {
+  if (e.features?.length && e.features[0].source == "locs") {
+    hoverLocation.value = e.features[0].id as string;
+    map.getCanvas()!.style.cursor = "pointer";
+  } else {
+    hoverLocation.value = "";
+    map.getCanvas()!.style.cursor = "";
+  }
 };
 
 export const MapView = () => {
   const mapRef = useRef<MapRef>(null);
+
+  useEffect(() => {
+    console.log(mapRef.current?.getLayer("loc-points"));
+  }, [mapRef.current]);
 
   return (
     <Map
@@ -43,6 +56,10 @@ export const MapView = () => {
       }}
       onClick={onMapClick}
       onContextMenu={onMapRightClick}
+      onMouseMove={useCallback(
+        (e: MapMouseEvent) => onMapHover(e, mapRef.current!),
+        [mapRef.current]
+      )}
       interactiveLayerIds={["loc-points"]}
     >
       <NavigationControl />
@@ -57,7 +74,29 @@ export const MapView = () => {
         promoteId="id"
         data={locationsGeoJson.value}
       >
-        <Layer id="loc-points" type="circle" />
+        <Layer
+          id="loc-points"
+          type="circle"
+          paint={{
+            "circle-radius": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              5,
+              0,
+              7,
+              5,
+              10,
+              7,
+            ],
+            "circle-color": [
+              "case",
+              ["==", ["get", "id"], hoverLocation.value],
+              "#f00",
+              "#000",
+            ],
+          }}
+        />
       </Source>
     </Map>
   );

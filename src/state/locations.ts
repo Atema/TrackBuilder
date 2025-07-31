@@ -40,14 +40,16 @@ export const locationsGeoJsonLine = computed<FeatureCollection<LineString>>(
   })
 );
 
+const roundCoord = (num: number) => Math.round(num * 100000000) / 100000000;
+
 export const addLocation = (lon: number, lat: number) => {
   locations.value = [
     ...locations.value,
     {
       type: "loc",
       id: crypto.randomUUID(),
-      lat,
-      lon,
+      lat: roundCoord(lat),
+      lon: roundCoord(lon),
     },
   ];
 };

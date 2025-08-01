@@ -7,7 +7,6 @@ import {
   Source,
 } from "react-map-gl/maplibre";
 
-import { signal } from "@preact/signals";
 import { hoverLocation } from "../../state/hover";
 import {
   addLocation,
@@ -18,8 +17,6 @@ import {
 } from "../../state/locations";
 import { bgMapStyle } from "./styles/bg-style";
 
-const dragItem = signal<string>();
-
 const getEventLoc = (e: MapMouseEvent) => {
   if (e.features?.length && e.features[0].source == "locs") {
     return e.features[0].id as string;
@@ -27,7 +24,7 @@ const getEventLoc = (e: MapMouseEvent) => {
 };
 
 const onMapClick = (e: MapMouseEvent) => {
-  if (getEventLoc(e) || dragItem.value) {
+  if (getEventLoc(e)) {
     return;
   }
 
@@ -41,35 +38,37 @@ const onMapRightClick = (e: MapMouseEvent) => {
   }
 };
 
-const onMouseMove = (e: MapMouseEvent) => {
-  if (dragItem.value) {
-    updateLocationCoord(dragItem.value, { coord: e.lngLat });
-    return;
-  }
-
+const onMouseEnter = (e: MapMouseEvent) => {
   const id = getEventLoc(e);
   if (id) {
     hoverLocation.value = id;
     e.target.getCanvas().style.cursor = "pointer";
-  } else {
-    hoverLocation.value = "";
-    e.target.getCanvas().style.cursor = "";
   }
+};
+
+const onMouseLeave = (e: MapMouseEvent) => {
+  hoverLocation.value = "";
+  e.target.getCanvas().style.cursor = "";
 };
 
 const onMouseDown = (e: MapMouseEvent) => {
   const id = getEventLoc(e);
 
   if (id && e.originalEvent.button == 1) {
-    dragItem.value = id;
     e.preventDefault();
-    e.target.once("mouseup", onMouseUp);
+
+    const onMove = (e: MapMouseEvent) => {
+      updateLocationCoord(id, { coord: e.lngLat });
+    };
+
+    const onUp = () => {
+      e.target.off("mousemove", onMove);
+    };
+
+    e.target.on("mousemove", onMove);
+    e.target.once("mouseup", onUp);
     e.target.getCanvas().style.cursor = "grab";
   }
-};
-
-const onMouseUp = () => {
-  dragItem.value = undefined;
 };
 
 export const MapView = () => (
@@ -82,7 +81,8 @@ export const MapView = () => (
     }}
     onClick={onMapClick}
     onContextMenu={onMapRightClick}
-    onMouseMove={onMouseMove}
+    onMouseEnter={onMouseEnter}
+    onMouseLeave={onMouseLeave}
     onMouseDown={onMouseDown}
     interactiveLayerIds={["loc-points"]}
   >

@@ -1,7 +1,7 @@
 import { FunctionComponent } from "preact";
 import { useCallback } from "preact/hooks";
 import { hoverLocation } from "../../state/hover";
-import { Location } from "../../state/locations";
+import { Location, timeZone } from "../../state/locations";
 import style from "./LocationItem.module.css";
 
 export type LocationProps = {
@@ -24,6 +24,29 @@ export const LocationItem: FunctionComponent<LocationProps> = ({
   >
     <div>{location.coordinates[0]}</div>
     <div>{location.coordinates[1]}</div>
-    <div>{location.time?.toString()}</div>
+    <div>
+      {location.time?.toLocaleString(
+        {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          timeZone: timeZone.value,
+        },
+        { locale: "en-GB" }
+      )}
+    </div>
+    <div>
+      {location.time?.toLocaleString(
+        {
+          hour: "numeric",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+          timeZoneName: "shortGeneric",
+          timeZone: timeZone.value,
+        },
+        { locale: "en-GB" }
+      )}
+    </div>
   </div>
 );

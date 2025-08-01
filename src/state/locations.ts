@@ -65,3 +65,5 @@ export const updateLocation = (id: string, location: Partial<Location>) => {
       : loc
   );
 };
+
+export const timeZone = signal(DateTime.now().zoneName);

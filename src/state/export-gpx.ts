@@ -28,7 +28,7 @@ export const generateGpx = () => {
         author: {
           name: "Author",
         },
-        time: DateTime.now().toISO(),
+        time: DateTime.now().toUTC().toISO(),
       },
 
       trk: {
@@ -38,7 +38,7 @@ export const generateGpx = () => {
             $lat: loc.coordinates[1],
             $lon: loc.coordinates[0],
             ele: loc.ele,
-            time: loc.time?.toISO(),
+            time: loc.time?.toUTC().toISO(),
           })),
         },
       },

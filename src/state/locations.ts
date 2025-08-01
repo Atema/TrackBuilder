@@ -57,3 +57,16 @@ export const addLocation = (lon: number, lat: number) => {
 export const removeLocation = (id: string) => {
   locations.value = locations.value.filter((loc) => loc.id != id);
 };
+
+export const updateLocation = (id: string, lon: number, lat: number) => {
+  locations.value = locations.value.map((loc) =>
+    loc.id == id
+      ? {
+          type: "loc",
+          id,
+          lat: roundCoord(lat),
+          lon: roundCoord(lon),
+        }
+      : loc
+  );
+};

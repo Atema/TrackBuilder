@@ -3,101 +3,124 @@ import {
   Layer,
   Map,
   MapMouseEvent,
-  MapRef,
   NavigationControl,
   Source,
 } from "react-map-gl/maplibre";
 
-import { useRef, useEffect, useCallback } from "preact/hooks";
+import { signal } from "@preact/signals";
 import { hoverLocation } from "../../state/hover";
 import {
   addLocation,
   locationsGeoJson,
   locationsGeoJsonLine,
   removeLocation,
+  updateLocation,
 } from "../../state/locations";
 import { bgMapStyle } from "./styles/bg-style";
 
+const dragItem = signal<string>();
+
+const getEventLoc = (e: MapMouseEvent) => {
+  if (e.features?.length && e.features[0].source == "locs") {
+    return e.features[0].id as string;
+  }
+};
+
 const onMapClick = (e: MapMouseEvent) => {
+  if (getEventLoc(e) || dragItem.value) {
+    return;
+  }
+
   addLocation(e.lngLat.lng, e.lngLat.lat);
 };
 
 const onMapRightClick = (e: MapMouseEvent) => {
-  if (e.features?.length && e.features[0].source == "locs") {
-    removeLocation(e.features[0].id as string);
+  const id = getEventLoc(e);
+  if (id) {
+    removeLocation(id);
   }
 };
 
-const onMapHover = (e: MapMouseEvent, map: MapRef) => {
-  if (e.features?.length && e.features[0].source == "locs") {
-    hoverLocation.value = e.features[0].id as string;
-    map.getCanvas()!.style.cursor = "pointer";
+const onMouseMove = (e: MapMouseEvent) => {
+  if (dragItem.value) {
+    updateLocation(dragItem.value, e.lngLat.lng, e.lngLat.lat);
+    return;
+  }
+
+  const id = getEventLoc(e);
+  if (id) {
+    hoverLocation.value = id;
+    e.target.getCanvas().style.cursor = "pointer";
   } else {
     hoverLocation.value = "";
-    map.getCanvas()!.style.cursor = "";
+    e.target.getCanvas().style.cursor = "";
   }
 };
 
-export const MapView = () => {
-  const mapRef = useRef<MapRef>(null);
+const onMouseDown = (e: MapMouseEvent) => {
+  const id = getEventLoc(e);
 
-  useEffect(() => {
-    console.log(mapRef.current?.getLayer("loc-points"));
-  }, [mapRef.current]);
-
-  return (
-    <Map
-      ref={mapRef}
-      mapStyle={bgMapStyle}
-      initialViewState={{
-        latitude: 52.2,
-        longitude: 5.3,
-        zoom: 7.5,
-      }}
-      onClick={onMapClick}
-      onContextMenu={onMapRightClick}
-      onMouseMove={useCallback(
-        (e: MapMouseEvent) => onMapHover(e, mapRef.current!),
-        [mapRef.current]
-      )}
-      interactiveLayerIds={["loc-points"]}
-    >
-      <NavigationControl />
-
-      <Source id="lines" type="geojson" data={locationsGeoJsonLine.value}>
-        <Layer id="loc-line" type="line" />
-      </Source>
-
-      <Source
-        id="locs"
-        type="geojson"
-        promoteId="id"
-        data={locationsGeoJson.value}
-      >
-        <Layer
-          id="loc-points"
-          type="circle"
-          paint={{
-            "circle-radius": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              5,
-              0,
-              7,
-              5,
-              10,
-              7,
-            ],
-            "circle-color": [
-              "case",
-              ["==", ["get", "id"], hoverLocation.value],
-              "#f00",
-              "#000",
-            ],
-          }}
-        />
-      </Source>
-    </Map>
-  );
+  if (id && e.originalEvent.button == 1) {
+    dragItem.value = id;
+    e.preventDefault();
+    e.target.once("mouseup", onMouseUp);
+    e.target.getCanvas().style.cursor = "grab";
+  }
 };
+
+const onMouseUp = () => {
+  dragItem.value = undefined;
+};
+
+export const MapView = () => (
+  <Map
+    mapStyle={bgMapStyle}
+    initialViewState={{
+      latitude: 52.2,
+      longitude: 5.3,
+      zoom: 7.5,
+    }}
+    onClick={onMapClick}
+    onContextMenu={onMapRightClick}
+    onMouseMove={onMouseMove}
+    onMouseDown={onMouseDown}
+    interactiveLayerIds={["loc-points"]}
+  >
+    <NavigationControl />
+
+    <Source id="lines" type="geojson" data={locationsGeoJsonLine.value}>
+      <Layer id="loc-line" type="line" />
+    </Source>
+
+    <Source
+      id="locs"
+      type="geojson"
+      promoteId="id"
+      data={locationsGeoJson.value}
+    >
+      <Layer
+        id="loc-points"
+        type="circle"
+        paint={{
+          "circle-radius": [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            5,
+            0,
+            7,
+            5,
+            10,
+            7,
+          ],
+          "circle-color": [
+            "case",
+            ["==", ["get", "id"], hoverLocation.value],
+            "#f00",
+            "#000",
+          ],
+        }}
+      />
+    </Source>
+  </Map>
+);

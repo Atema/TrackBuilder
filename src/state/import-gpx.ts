@@ -1,4 +1,5 @@
 import { XMLParser } from "fast-xml-parser";
+import { LngLat } from "maplibre-gl";
 import { addLocation } from "./locations";
 
 const alwaysArray = ["gpx.trk", "gpx.trk.trkseg", "gpx.trk.trkseg.trkpt"];
@@ -28,7 +29,7 @@ export const parseGpx = (contents: string, filename?: string) => {
     }
 
     points.forEach((el: any) => {
-      addLocation(el["$lon"], el["$lat"]);
+      addLocation(new LngLat(el["$lon"], el["$lat"]));
     });
 
     console.log(points);

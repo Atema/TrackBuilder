@@ -29,9 +29,9 @@ export const generateGpx = () => {
       trk: {
         name: "Track name",
         trkseg: {
-          trkpt: locations.peek().map((loc) => ({
-            $lat: loc.lat,
-            $lon: loc.lon,
+          trkpt: locations.value.map((loc) => ({
+            $lat: loc.coord.lat,
+            $lon: loc.coord.lng,
           })),
         },
       },

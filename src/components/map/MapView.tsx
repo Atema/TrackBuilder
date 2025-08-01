@@ -31,7 +31,7 @@ const onMapClick = (e: MapMouseEvent) => {
     return;
   }
 
-  addLocation(e.lngLat.lng, e.lngLat.lat);
+  addLocation(e.lngLat);
 };
 
 const onMapRightClick = (e: MapMouseEvent) => {
@@ -43,7 +43,7 @@ const onMapRightClick = (e: MapMouseEvent) => {
 
 const onMouseMove = (e: MapMouseEvent) => {
   if (dragItem.value) {
-    updateLocation(dragItem.value, e.lngLat.lng, e.lngLat.lat);
+    updateLocation(dragItem.value, e.lngLat);
     return;
   }
 

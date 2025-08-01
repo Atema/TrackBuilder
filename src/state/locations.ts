@@ -1,25 +1,24 @@
 import { computed, signal } from "@preact/signals";
 import { FeatureCollection, LineString, Point } from "geojson";
+import { LngLat } from "maplibre-gl";
 
 export type Location = {
-  type: "loc";
   id: string;
-  lat: number;
-  lon: number;
+  coord: LngLat;
 };
 
 export const locations = signal<Location[]>([]);
 
 export const locationsGeoJson = computed<FeatureCollection<Point>>(() => ({
   type: "FeatureCollection",
-  features: locations.value.map((loc) => ({
+  features: locations.value.map(({ id, coord }) => ({
     type: "Feature",
     geometry: {
       type: "Point",
-      coordinates: [loc.lon, loc.lat],
+      coordinates: coord.toArray(),
     },
     properties: {
-      id: loc.id,
+      id,
     },
   })),
 }));
@@ -32,7 +31,7 @@ export const locationsGeoJsonLine = computed<FeatureCollection<LineString>>(
         type: "Feature",
         geometry: {
           type: "LineString",
-          coordinates: locations.value.map((loc) => [loc.lon, loc.lat]),
+          coordinates: locations.value.map((loc) => loc.coord.toArray()),
         },
         properties: {},
       },
@@ -40,16 +39,12 @@ export const locationsGeoJsonLine = computed<FeatureCollection<LineString>>(
   })
 );
 
-const roundCoord = (num: number) => Math.round(num * 100000000) / 100000000;
-
-export const addLocation = (lon: number, lat: number) => {
+export const addLocation = (coord: LngLat) => {
   locations.value = [
     ...locations.value,
     {
-      type: "loc",
       id: crypto.randomUUID(),
-      lat: roundCoord(lat),
-      lon: roundCoord(lon),
+      coord,
     },
   ];
 };
@@ -58,14 +53,12 @@ export const removeLocation = (id: string) => {
   locations.value = locations.value.filter((loc) => loc.id != id);
 };
 
-export const updateLocation = (id: string, lon: number, lat: number) => {
+export const updateLocation = (id: string, coord: LngLat) => {
   locations.value = locations.value.map((loc) =>
     loc.id == id
       ? {
-          type: "loc",
           id,
-          lat: roundCoord(lat),
-          lon: roundCoord(lon),
+          coord,
         }
       : loc
   );

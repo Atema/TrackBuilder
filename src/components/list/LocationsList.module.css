@@ -1,0 +1,9 @@
+.sidepanel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.list {
+  flex: 1 0 0;
+}

@@ -22,30 +22,65 @@ export const LocationItem: FunctionComponent<LocationProps> = ({
       hoverLocation.value = "";
     }, [])}
   >
-    <div>{location.coordinates[0]}</div>
-    <div>{location.coordinates[1]}</div>
-    <div>
-      {location.time?.toLocaleString(
-        {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          timeZone: timeZone.value,
-        },
-        { locale: "en-GB" }
-      )}
-    </div>
-    <div>
-      {location.time?.toLocaleString(
-        {
-          hour: "numeric",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-          timeZoneName: "shortGeneric",
-          timeZone: timeZone.value,
-        },
-        { locale: "en-GB" }
+    {location.time ? (
+      <>
+        <div class={style.date}>
+          {location.time.toLocaleString(
+            {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+              timeZone: timeZone.value,
+            },
+            { locale: "en-GB" }
+          )}
+        </div>
+        <div class={style.time}>
+          {location.time.toLocaleString(
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: false,
+              timeZone: timeZone.value,
+            },
+            { locale: "en-GB" }
+          )}{" "}
+          <span class={style.timezone}>
+            {
+              location.time
+                .toLocaleString(
+                  {
+                    day: "numeric",
+                    timeZone: timeZone.value,
+                    timeZoneName: "shortOffset",
+                  },
+                  { locale: "en-GB" }
+                )
+                .split(", ")[1]
+            }
+          </span>
+        </div>
+      </>
+    ) : (
+      <div class={style.time}>No time</div>
+    )}
+    <div
+      class={style.coordinates}
+      onClick={useCallback(() => {
+        window.navigator.clipboard.writeText(
+          `${location.coordinates[1]}, ${location.coordinates[0]}`
+        );
+      }, [])}
+    >
+      {location.coordinates[1]}
+      <span class={style.unit}>°</span>, {location.coordinates[0]}
+      <span class={style.unit}>°</span>
+      {location.elevation && (
+        <>
+          , {location.elevation}
+          <span class={style.unit}>m↑</span>
+        </>
       )}
     </div>
   </div>

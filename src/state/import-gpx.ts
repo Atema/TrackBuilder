@@ -33,7 +33,7 @@ export const parseGpx = (contents: string, filename?: string) => {
       addLocation({
         coordinates: [el["$lon"], el["$lat"]],
         time: el.time ? DateTime.fromISO(el.time) : undefined,
-        ele: el.ele,
+        elevation: el.ele,
       });
     });
   } catch (e) {

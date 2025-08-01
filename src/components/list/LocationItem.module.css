@@ -1,3 +1,32 @@
+.location {
+  margin: 0.5rem;
+  border: 1px solid #eee;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  user-select: none;
+}
+
 .location[data-hover="true"] {
-  background-color: red;
+  background-color: #eee;
+}
+
+.date {
+  font-size: 0.85rem;
+}
+
+.time {
+  font-size: 1.15rem;
+}
+
+.timezone {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.coordinates {
+  cursor: pointer;
+}
+
+.unit {
+  color: #999;
 }

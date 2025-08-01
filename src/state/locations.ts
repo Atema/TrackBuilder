@@ -6,7 +6,7 @@ export type Location = {
   id: string;
   coordinates: [number, number];
   time?: DateTime;
-  ele?: number;
+  elevation?: number;
 };
 
 export const locations = signal<Location[]>([]);

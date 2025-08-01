@@ -37,7 +37,7 @@ export const generateGpx = () => {
           trkpt: locations.value.map((loc) => ({
             $lat: loc.coordinates[1],
             $lon: loc.coordinates[0],
-            ele: loc.ele,
+            ele: loc.elevation,
             time: loc.time?.toUTC().toISO(),
           })),
         },

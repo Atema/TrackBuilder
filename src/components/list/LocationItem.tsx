@@ -24,5 +24,6 @@ export const LocationItem: FunctionComponent<LocationProps> = ({
   >
     <div>{location.coord.lng}</div>
     <div>{location.coord.lat}</div>
+    <div>{location.time?.toString()}</div>
   </div>
 );

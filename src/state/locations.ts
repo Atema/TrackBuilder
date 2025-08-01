@@ -1,10 +1,12 @@
 import { computed, signal } from "@preact/signals";
 import { FeatureCollection, LineString, Point } from "geojson";
 import { LngLat } from "maplibre-gl";
+import { DateTime } from "luxon";
 
 export type Location = {
   id: string;
   coord: LngLat;
+  time?: DateTime;
 };
 
 export const locations = signal<Location[]>([]);
@@ -39,12 +41,12 @@ export const locationsGeoJsonLine = computed<FeatureCollection<LineString>>(
   })
 );
 
-export const addLocation = (coord: LngLat) => {
+export const addLocation = (location: Omit<Location, "id">) => {
   locations.value = [
     ...locations.value,
     {
       id: crypto.randomUUID(),
-      coord,
+      ...location,
     },
   ];
 };
@@ -53,12 +55,15 @@ export const removeLocation = (id: string) => {
   locations.value = locations.value.filter((loc) => loc.id != id);
 };
 
-export const updateLocation = (id: string, coord: LngLat) => {
+export const updateLocationCoord = (
+  id: string,
+  location: Partial<Location>
+) => {
   locations.value = locations.value.map((loc) =>
     loc.id == id
       ? {
-          id,
-          coord,
+          ...loc,
+          ...location,
         }
       : loc
   );

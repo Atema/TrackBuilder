@@ -1,6 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
 import { LngLat } from "maplibre-gl";
 import { addLocation } from "./locations";
+import { DateTime } from "luxon";
 
 const alwaysArray = ["gpx.trk", "gpx.trk.trkseg", "gpx.trk.trkseg.trkpt"];
 
@@ -29,10 +30,11 @@ export const parseGpx = (contents: string, filename?: string) => {
     }
 
     points.forEach((el: any) => {
-      addLocation(new LngLat(el["$lon"], el["$lat"]));
+      addLocation({
+        coord: new LngLat(el["$lon"], el["$lat"]),
+        time: el.time ? DateTime.now() : undefined,
+      });
     });
-
-    console.log(points);
   } catch (e) {
     window.alert(`${e}`);
   }

@@ -22,8 +22,8 @@ export const LocationItem: FunctionComponent<LocationProps> = ({
       hoverLocation.value = "";
     }, [])}
   >
-    <div>{location.coord.lng}</div>
-    <div>{location.coord.lat}</div>
+    <div>{location.coordinates[0]}</div>
+    <div>{location.coordinates[1]}</div>
     <div>{location.time?.toString()}</div>
   </div>
 );

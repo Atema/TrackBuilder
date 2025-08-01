@@ -1,23 +1,23 @@
 import { computed, signal } from "@preact/signals";
 import { FeatureCollection, LineString, Point } from "geojson";
-import { LngLat } from "maplibre-gl";
 import { DateTime } from "luxon";
 
 export type Location = {
   id: string;
-  coord: LngLat;
+  coordinates: [number, number];
   time?: DateTime;
+  ele?: number;
 };
 
 export const locations = signal<Location[]>([]);
 
 export const locationsGeoJson = computed<FeatureCollection<Point>>(() => ({
   type: "FeatureCollection",
-  features: locations.value.map(({ id, coord }) => ({
+  features: locations.value.map(({ id, coordinates }) => ({
     type: "Feature",
     geometry: {
       type: "Point",
-      coordinates: coord.toArray(),
+      coordinates,
     },
     properties: {
       id,
@@ -33,7 +33,7 @@ export const locationsGeoJsonLine = computed<FeatureCollection<LineString>>(
         type: "Feature",
         geometry: {
           type: "LineString",
-          coordinates: locations.value.map((loc) => loc.coord.toArray()),
+          coordinates: locations.value.map((loc) => loc.coordinates),
         },
         properties: {},
       },
@@ -55,10 +55,7 @@ export const removeLocation = (id: string) => {
   locations.value = locations.value.filter((loc) => loc.id != id);
 };
 
-export const updateLocationCoord = (
-  id: string,
-  location: Partial<Location>
-) => {
+export const updateLocation = (id: string, location: Partial<Location>) => {
   locations.value = locations.value.map((loc) =>
     loc.id == id
       ? {

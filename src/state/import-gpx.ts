@@ -1,7 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
-import { LngLat } from "maplibre-gl";
-import { addLocation } from "./locations";
 import { DateTime } from "luxon";
+import { addLocation } from "./locations";
 
 const alwaysArray = ["gpx.trk", "gpx.trk.trkseg", "gpx.trk.trkseg.trkpt"];
 
@@ -20,6 +19,7 @@ export const parseGpx = (contents: string, filename?: string) => {
     }
 
     // const name: string = `${gpx?.metadata?.name}` || filename || "";
+    // const author: string = `${gpx.metadata?.author?.name}` || "";
 
     const points = gpx.trk
       .flatMap((trk: any) => trk.trkseg || [])
@@ -31,8 +31,9 @@ export const parseGpx = (contents: string, filename?: string) => {
 
     points.forEach((el: any) => {
       addLocation({
-        coord: new LngLat(el["$lon"], el["$lat"]),
-        time: el.time ? DateTime.now() : undefined,
+        coordinates: [el["$lon"], el["$lat"]],
+        time: el.time ? DateTime.fromISO(el.time) : undefined,
+        ele: el.ele,
       });
     });
   } catch (e) {

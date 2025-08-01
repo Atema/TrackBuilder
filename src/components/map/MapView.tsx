@@ -13,7 +13,7 @@ import {
   locationsGeoJson,
   locationsGeoJsonLine,
   removeLocation,
-  updateLocationCoord,
+  updateLocation,
 } from "../../state/locations";
 import { bgMapStyle } from "./styles/bg-style";
 
@@ -28,7 +28,7 @@ const onMapClick = (e: MapMouseEvent) => {
     return;
   }
 
-  addLocation({ coord: e.lngLat });
+  addLocation({ coordinates: e.lngLat.toArray() });
 };
 
 const onMapRightClick = (e: MapMouseEvent) => {
@@ -58,7 +58,7 @@ const onMouseDown = (e: MapMouseEvent) => {
     e.preventDefault();
 
     const onMove = (e: MapMouseEvent) => {
-      updateLocationCoord(id, { coord: e.lngLat });
+      updateLocation(id, { coordinates: e.lngLat.toArray() });
     };
 
     const onUp = () => {

@@ -46,6 +46,8 @@ export const LocationItem: FunctionComponent<LocationProps> = ({
               second: "2-digit",
               hour12: false,
               timeZone: timeZone.value,
+              // @ts-ignore
+              fractionalSecondDigits: 3,
             },
             { locale: "en-GB" }
           )}{" "}

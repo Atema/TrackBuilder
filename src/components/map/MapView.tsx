@@ -20,11 +20,7 @@ import {
 import { scrollListToLocation, scrollMapTo } from "../../state/scroll";
 import { bgMapStyle } from "./styles/bg-style";
 import { useSignalEffect } from "@preact/signals";
-
-const roundCoordinates = (lngLat: LngLat): [number, number] => [
-  Math.round(lngLat.lng * 10000000) / 10000000,
-  Math.round(lngLat.lat * 10000000) / 10000000,
-];
+import { round } from "@turf/helpers";
 
 const getEventLoc = (e: MapMouseEvent) => {
   if (e.features?.length && e.features[0].source == "locs") {
@@ -38,7 +34,9 @@ const onMapClick = (e: MapMouseEvent) => {
     return scrollListToLocation(id);
   }
 
-  const addedId = addLocation({ coordinates: roundCoordinates(e.lngLat) });
+  const addedId = addLocation({
+    coordinates: [round(e.lngLat.lng, 7), round(e.lngLat.lat, 7)],
+  });
   scrollListToLocation(addedId);
   hoverLocation.value = addedId;
   e.target.getCanvas().style.cursor = "pointer";
@@ -71,7 +69,9 @@ const onMouseDown = (e: MapMouseEvent) => {
     e.preventDefault();
 
     const onMove = (e: MapMouseEvent) => {
-      updateLocation(id, { coordinates: roundCoordinates(e.lngLat) });
+      updateLocation(id, {
+        coordinates: [round(e.lngLat.lng, 7), round(e.lngLat.lat, 7)],
+      });
     };
 
     const onUp = () => {

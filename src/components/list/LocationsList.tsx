@@ -1,6 +1,6 @@
 import { downloadGpx } from "../../state/export-gpx";
 import { uploadGpx } from "../../state/import-gpx";
-import { clearLocations, locations } from "../../state/locations";
+import { calculateTimes, clearLocations, locations } from "../../state/locations";
 import { LocationItem } from "./LocationItem";
 import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 import style from "./LocationsList.module.css";
@@ -26,6 +26,7 @@ export const LocationsList = () => {
         <button onClick={downloadGpx}>Download</button>
         <button onClick={uploadGpx}>Upload</button>
         <button onClick={clearLocations}>Clear</button>
+        <button onClick={calculateTimes}>Calculate</button>
       </div>
       <div class={style.list}>
         <Virtuoso

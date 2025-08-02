@@ -1,5 +1,6 @@
 import { batch, computed, signal } from "@preact/signals";
-import { FeatureCollection, LineString, Point } from "geojson";
+import { distance } from "@turf/distance";
+import { featureCollection, lineString, point } from "@turf/helpers";
 import { DateTime } from "luxon";
 
 export type Location = {
@@ -11,61 +12,29 @@ export type Location = {
 
 export const locations = signal<Location[]>([]);
 
-export const locationsGeoJson = computed<FeatureCollection<Point>>(() => ({
-  type: "FeatureCollection",
-  features: locations.value.map(({ id, coordinates }) => ({
-    type: "Feature",
-    geometry: {
-      type: "Point",
-      coordinates,
-    },
-    properties: {
-      id,
-    },
-  })),
-}));
-
-export const locationsGeoJsonLine = computed<FeatureCollection<LineString>>(
-  () => ({
-    type: "FeatureCollection",
-    features: [
-      {
-        type: "Feature",
-        geometry: {
-          type: "LineString",
-          coordinates: locations.value
-            .slice(0, insertIndex.value)
-            .map((loc) => loc.coordinates),
-        },
-        properties: {},
-      },
-
-      {
-        type: "Feature",
-        geometry: {
-          type: "LineString",
-          coordinates: locations.value
-            .slice(insertIndex.value - 1, insertIndex.value + 1)
-            .map((loc) => loc.coordinates),
-        },
-        properties: {
-          insert: true,
-        },
-      },
-
-      {
-        type: "Feature",
-        geometry: {
-          type: "LineString",
-          coordinates: locations.value
-            .slice(insertIndex.value)
-            .map((loc) => loc.coordinates),
-        },
-        properties: {},
-      },
-    ],
-  })
+export const locationsGeoJson = computed(() =>
+  featureCollection(
+    locations.value.map(({ id, coordinates }) => point(coordinates, { id }))
+  )
 );
+
+export const locationsGeoJsonLine = computed(() => {
+  const before = locations.value
+    .slice(0, insertIndex.value)
+    .map((loc) => loc.coordinates);
+  const insert = locations.value
+    .slice(insertIndex.value - 1, insertIndex.value + 1)
+    .map((loc) => loc.coordinates);
+  const after = locations.value
+    .slice(insertIndex.value)
+    .map((loc) => loc.coordinates);
+
+  return featureCollection([
+    ...(before.length > 1 ? [lineString(before)] : []),
+    ...(insert.length > 1 ? [lineString(insert, { insert: true })] : []),
+    ...(after.length > 1 ? [lineString(after)] : []),
+  ]);
+});
 
 export const addLocation = (location: Omit<Location, "id">) => {
   const id = crypto.randomUUID();
@@ -125,4 +94,47 @@ export const clearLocations = () => {
     insertPosition.value = "start";
     locations.value = [];
   }
+};
+
+export const calculateTimes = () => {
+  const locs = locations.value;
+
+  for (let i = 0; i < locs.length - 1; i++) {
+    if (!locs[i].time || locs[i + 1].time) {
+      continue;
+    }
+
+    const startIdx = i;
+    let endIdx = i;
+    let totalDist = 0;
+
+    for (let j = i + 1; j < locs.length; j++) {
+      totalDist += distance(locs[j].coordinates, locs[j - 1].coordinates);
+
+      if (locs[j].time) {
+        endIdx = j;
+        break;
+      }
+    }
+
+    const timeDiff = locs[endIdx].time!.diff(locs[startIdx].time!).toMillis();
+
+    for (let j = startIdx + 1; j < endIdx; j++) {
+      locs[j] = {
+        ...locs[j],
+        time: locs[j - 1].time!.plus(
+          Math.round(
+            (timeDiff / totalDist) *
+              distance(locs[j].coordinates, locs[j - 1].coordinates)
+          )
+        ),
+      };
+
+      console.log(locs[j].time);
+    }
+
+    i = endIdx;
+  }
+
+  locations.value = [...locs];
 };

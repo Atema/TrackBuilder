@@ -119,3 +119,10 @@ const insertIndex = computed(
 export const setInsertPosition = (id: string) => {
   insertPosition.value = id;
 };
+
+export const clearLocations = () => {
+  if (window.confirm("Are you sure to clear all locations?")) {
+    insertPosition.value = "start";
+    locations.value = [];
+  }
+};

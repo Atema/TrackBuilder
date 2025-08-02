@@ -1,6 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
 import { DateTime } from "luxon";
-import { addLocation } from "./locations";
+import { addLocation, insertPosition, Location, locations } from "./locations";
+import { scrollListTo, scrollListToLocation } from "./scroll";
 
 const alwaysArray = ["gpx.trk", "gpx.trk.trkseg", "gpx.trk.trkseg.trkpt"];
 
@@ -29,19 +30,32 @@ export const parseGpx = (contents: string, filename?: string) => {
       throw new Error("No track data found in file");
     }
 
-    points.forEach((el: any) => {
-      addLocation({
-        coordinates: [el["$lon"], el["$lat"]],
-        time: el.time ? DateTime.fromISO(el.time) : undefined,
-        elevation: el.ele,
+    let id: string = "";
+
+    for (let point of points) {
+      id = addLocation({
+        coordinates: [point["$lon"], point["$lat"]],
+        time: point.time ? DateTime.fromISO(point.time) : undefined,
+        elevation: point.ele,
       });
-    });
+    }
+
+    scrollListToLocation(id);
   } catch (e) {
     window.alert(`${e}`);
   }
 };
 
 export const uploadGpx = () => {
+  if (
+    locations.value.length > 0 &&
+    !window.confirm(
+      "Are you sure? This will insert the locations in the current position."
+    )
+  ) {
+    return;
+  }
+
   const input = document.createElement("input");
   input.type = "file";
   input.accept = "application/gpx+xml";

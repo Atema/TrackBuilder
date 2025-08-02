@@ -82,6 +82,8 @@ export const addLocation = (location: Omit<Location, "id">) => {
 
     insertPosition.value = id;
   });
+
+  return id;
 };
 
 export const removeLocation = (id: string) => {

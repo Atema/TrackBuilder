@@ -4,6 +4,7 @@
   border-radius: 0.5rem;
   padding: 0.5rem;
   user-select: none;
+  cursor: pointer;
 }
 
 .location[data-hover="true"] {
@@ -21,10 +22,6 @@
 .timezone {
   font-size: 0.85rem;
   color: #999;
-}
-
-.coordinates {
-  cursor: pointer;
 }
 
 .unit {

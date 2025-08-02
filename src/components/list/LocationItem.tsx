@@ -1,7 +1,7 @@
 import { FunctionComponent } from "preact";
-import { useCallback } from "preact/hooks";
 import { hoverLocation } from "../../state/hover";
 import { Location, timeZone } from "../../state/locations";
+import { scrollMapToLocation } from "../../state/scroll";
 import style from "./LocationItem.module.css";
 
 export type LocationProps = {
@@ -15,12 +15,15 @@ export const LocationItem: FunctionComponent<LocationProps> = ({
     class={style.location}
     key={location.id}
     data-hover={location.id == hoverLocation.value}
-    onMouseEnter={useCallback(() => {
+    onMouseEnter={() => {
       hoverLocation.value = location.id;
-    }, [location.id])}
-    onMouseLeave={useCallback(() => {
+    }}
+    onMouseLeave={() => {
       hoverLocation.value = "";
-    }, [])}
+    }}
+    onClick={() => {
+      scrollMapToLocation(...location.coordinates);
+    }}
   >
     {location.time ? (
       <>
@@ -65,14 +68,7 @@ export const LocationItem: FunctionComponent<LocationProps> = ({
     ) : (
       <div class={style.time}>No time</div>
     )}
-    <div
-      class={style.coordinates}
-      onClick={useCallback(() => {
-        window.navigator.clipboard.writeText(
-          `${location.coordinates[1]}, ${location.coordinates[0]}`
-        );
-      }, [])}
-    >
+    <div class={style.coordinates}>
       {location.coordinates[1]}
       <span class={style.unit}>°</span>, {location.coordinates[0]}
       <span class={style.unit}>°</span>

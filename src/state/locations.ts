@@ -1,4 +1,4 @@
-import { computed, signal } from "@preact/signals";
+import { batch, computed, signal } from "@preact/signals";
 import { FeatureCollection, LineString, Point } from "geojson";
 import { DateTime } from "luxon";
 
@@ -33,7 +33,33 @@ export const locationsGeoJsonLine = computed<FeatureCollection<LineString>>(
         type: "Feature",
         geometry: {
           type: "LineString",
-          coordinates: locations.value.map((loc) => loc.coordinates),
+          coordinates: locations.value
+            .slice(0, insertIndex.value)
+            .map((loc) => loc.coordinates),
+        },
+        properties: {},
+      },
+
+      {
+        type: "Feature",
+        geometry: {
+          type: "LineString",
+          coordinates: locations.value
+            .slice(insertIndex.value - 1, insertIndex.value + 1)
+            .map((loc) => loc.coordinates),
+        },
+        properties: {
+          insert: true,
+        },
+      },
+
+      {
+        type: "Feature",
+        geometry: {
+          type: "LineString",
+          coordinates: locations.value
+            .slice(insertIndex.value)
+            .map((loc) => loc.coordinates),
         },
         properties: {},
       },
@@ -42,17 +68,31 @@ export const locationsGeoJsonLine = computed<FeatureCollection<LineString>>(
 );
 
 export const addLocation = (location: Omit<Location, "id">) => {
-  locations.value = [
-    ...locations.value,
-    {
-      id: crypto.randomUUID(),
-      ...location,
-    },
-  ];
+  const id = crypto.randomUUID();
+
+  batch(() => {
+    locations.value = [
+      ...locations.value.slice(0, insertIndex.value),
+      {
+        id,
+        ...location,
+      },
+      ...locations.value.slice(insertIndex.value),
+    ];
+
+    insertPosition.value = id;
+  });
 };
 
 export const removeLocation = (id: string) => {
-  locations.value = locations.value.filter((loc) => loc.id != id);
+  batch(() => {
+    if (insertPosition.value == id) {
+      insertPosition.value =
+        locations.value[insertIndex.value - 2]?.id || "start";
+    }
+
+    locations.value = locations.value.filter((loc) => loc.id != id);
+  });
 };
 
 export const updateLocation = (id: string, location: Partial<Location>) => {
@@ -67,3 +107,13 @@ export const updateLocation = (id: string, location: Partial<Location>) => {
 };
 
 export const timeZone = signal(DateTime.now().zoneName);
+
+export const insertPosition = signal("start");
+
+const insertIndex = computed(
+  () => locations.value.findIndex((loc) => loc.id == insertPosition.value) + 1
+);
+
+export const setInsertPosition = (id: string) => {
+  insertPosition.value = id;
+};

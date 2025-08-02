@@ -1,6 +1,7 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
   Layer,
+  LngLat,
   Map,
   MapMouseEvent,
   NavigationControl,
@@ -10,12 +11,18 @@ import {
 import { hoverLocation } from "../../state/hover";
 import {
   addLocation,
+  insertPosition,
   locationsGeoJson,
   locationsGeoJsonLine,
   removeLocation,
   updateLocation,
 } from "../../state/locations";
 import { bgMapStyle } from "./styles/bg-style";
+
+const roundCoordinates = (lngLat: LngLat): [number, number] => [
+  Math.round(lngLat.lng * 10000000) / 10000000,
+  Math.round(lngLat.lat * 10000000) / 10000000,
+];
 
 const getEventLoc = (e: MapMouseEvent) => {
   if (e.features?.length && e.features[0].source == "locs") {
@@ -24,11 +31,13 @@ const getEventLoc = (e: MapMouseEvent) => {
 };
 
 const onMapClick = (e: MapMouseEvent) => {
-  if (getEventLoc(e)) {
+  const id = getEventLoc(e);
+  if (id) {
+    insertPosition.value = id;
     return;
   }
 
-  addLocation({ coordinates: e.lngLat.toArray() });
+  addLocation({ coordinates: roundCoordinates(e.lngLat) });
 };
 
 const onMapRightClick = (e: MapMouseEvent) => {
@@ -58,7 +67,7 @@ const onMouseDown = (e: MapMouseEvent) => {
     e.preventDefault();
 
     const onMove = (e: MapMouseEvent) => {
-      updateLocation(id, { coordinates: e.lngLat.toArray() });
+      updateLocation(id, { coordinates: roundCoordinates(e.lngLat) });
     };
 
     const onUp = () => {
@@ -89,7 +98,25 @@ export const MapView = () => (
     <NavigationControl />
 
     <Source id="lines" type="geojson" data={locationsGeoJsonLine.value}>
-      <Layer id="loc-line" type="line" />
+      <Layer
+        id="loc-line"
+        type="line"
+        filter={["!", ["has", "insert"]]}
+        paint={{
+          "line-width": 1.5,
+        }}
+      />
+
+      <Layer
+        id="loc-line-insert"
+        type="line"
+        filter={["has", "insert"]}
+        paint={{
+          "line-width": 2.5,
+          "line-dasharray": ["literal", [3, 3]],
+          "line-color": "#999",
+        }}
+      />
     </Source>
 
     <Source

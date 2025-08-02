@@ -1,0 +1,27 @@
+.empty {
+  margin: 0.2rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  padding: 0 0.5rem;
+  user-select: none;
+  font-size: 0.85rem;
+  text-align: center;
+  color: transparent;
+  cursor: pointer;
+}
+
+.empty:hover {
+  border: 1px solid #eee;
+  background: #eee;
+  color: #999;
+}
+
+.insert {
+  margin: 0.5rem;
+  border: 1px solid #eee;
+  background: #eee;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  user-select: none;
+  text-align: center;
+}

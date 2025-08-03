@@ -2,6 +2,7 @@ import { batch, computed, signal } from "@preact/signals";
 import { distance } from "@turf/distance";
 import { featureCollection, lineString, point } from "@turf/helpers";
 import { DateTime } from "luxon";
+import { bbox } from "@turf/bbox";
 
 export type Location = {
   id: string;
@@ -16,6 +17,10 @@ export const locationsGeoJson = computed(() =>
   featureCollection(
     locations.value.map(({ id, coordinates }) => point(coordinates, { id }))
   )
+);
+
+export const locationsBounds = computed(
+  () => bbox(locationsGeoJson.value) as [number, number, number, number]
 );
 
 export const locationsGeoJsonLine = computed(() => {

@@ -21,6 +21,8 @@ import { scrollListToLocation, scrollMapTo } from "../../state/scroll";
 import { bgMapStyle } from "./styles/bg-style";
 import { useSignalEffect } from "@preact/signals";
 import { round } from "@turf/helpers";
+import { MapControlGroup } from "./controls/MapControlGroup";
+import { ZoomDataControl } from "./controls/ZoomDataControl";
 
 const getEventLoc = (e: MapMouseEvent) => {
   if (e.features?.length && e.features[0].source == "locs") {
@@ -110,6 +112,10 @@ export const MapView = () => {
       interactiveLayerIds={["loc-points"]}
     >
       <NavigationControl />
+
+      <MapControlGroup position="top-right">
+        <ZoomDataControl />
+      </MapControlGroup>
 
       <Source id="lines" type="geojson" data={locationsGeoJsonLine.value}>
         <Layer

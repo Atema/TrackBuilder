@@ -1,14 +1,15 @@
+import { useSignalEffect } from "@preact/signals";
+import { round } from "@turf/helpers";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { useRef } from "preact/hooks";
 import {
   Layer,
-  LngLat,
   Map,
   MapMouseEvent,
   MapRef,
   NavigationControl,
   Source,
 } from "react-map-gl/maplibre";
-import { useRef } from "preact/hooks";
 import { hoverLocation } from "../../state/hover";
 import {
   addLocation,
@@ -18,11 +19,13 @@ import {
   updateLocation,
 } from "../../state/locations";
 import { scrollListToLocation, scrollMapTo } from "../../state/scroll";
-import { bgMapStyle } from "./styles/bg-style";
-import { useSignalEffect } from "@preact/signals";
-import { round } from "@turf/helpers";
+import { CalculateTimesControl } from "./controls/CalculateTimesControl";
+import { ClearLocationsControl } from "./controls/ClearLocationsControl";
+import { LoadFileControl } from "./controls/LoadFileControl";
 import { MapControlGroup } from "./controls/MapControlGroup";
+import { SaveFileControl } from "./controls/SaveFileControl";
 import { ZoomDataControl } from "./controls/ZoomDataControl";
+import { bgMapStyle } from "./styles/bg-style";
 
 const getEventLoc = (e: MapMouseEvent) => {
   if (e.features?.length && e.features[0].source == "locs") {
@@ -115,6 +118,16 @@ export const MapView = () => {
 
       <MapControlGroup position="top-right">
         <ZoomDataControl />
+      </MapControlGroup>
+
+      <MapControlGroup position="top-left">
+        <LoadFileControl />
+        <SaveFileControl />
+        <ClearLocationsControl />
+      </MapControlGroup>
+
+      <MapControlGroup position="top-left">
+        <CalculateTimesControl />
       </MapControlGroup>
 
       <Source id="lines" type="geojson" data={locationsGeoJsonLine.value}>

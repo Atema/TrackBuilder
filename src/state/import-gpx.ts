@@ -1,7 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
 import { DateTime } from "luxon";
-import { addLocation, insertPosition, Location, locations } from "./locations";
-import { scrollListTo, scrollListToLocation } from "./scroll";
+import { addLocation, locations } from "./locations";
+import { scrollListToLocation } from "./scroll";
 
 const alwaysArray = ["gpx.trk", "gpx.trk.trkseg", "gpx.trk.trkseg.trkpt"];
 
@@ -46,25 +46,28 @@ export const parseGpx = (contents: string, filename?: string) => {
   }
 };
 
-export const uploadGpx = () => {
-  if (
-    locations.value.length > 0 &&
-    !window.confirm(
-      "Are you sure? This will insert the locations in the current position."
-    )
-  ) {
-    return;
-  }
-
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "application/gpx+xml";
-
-  input.addEventListener("change", async () => {
-    if (input.files?.length) {
-      parseGpx(await input.files[0].text(), input.files[0].name);
+export const uploadGpx = () =>
+  new Promise<void>((resolve, reject) => {
+    if (
+      locations.value.length > 0 &&
+      !window.confirm(
+        "Are you sure? This will insert the locations in the current position."
+      )
+    ) {
+      return;
     }
-  });
 
-  input.click();
-};
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "application/gpx+xml";
+
+    input.addEventListener("change", async () => {
+      if (input.files?.length) {
+        parseGpx(await input.files[0].text(), input.files[0].name);
+        resolve();
+      }
+      reject();
+    });
+
+    input.click();
+  });

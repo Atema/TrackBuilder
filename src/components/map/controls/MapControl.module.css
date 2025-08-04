@@ -8,6 +8,22 @@
   mask-repeat: no-repeat;
 }
 
-.zoomData span {
+.zoomData {
   mask-image: url("@tabler/icons/outline/zoom-scan.svg");
+}
+
+.loadFile {
+  mask-image: url("@tabler/icons/outline/file.svg");
+}
+
+.saveFile {
+  mask-image: url("@tabler/icons/outline/device-floppy.svg");
+}
+
+.clearLocations {
+  mask-image: url("@tabler/icons/outline/trash-x.svg");
+}
+
+.calculateTimes {
+  mask-image: url("@tabler/icons/outline/clock.svg");
 }

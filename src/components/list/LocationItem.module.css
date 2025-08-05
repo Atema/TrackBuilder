@@ -2,13 +2,56 @@
   margin: 0.2rem 0.5rem;
   border: 1px solid #eee;
   border-radius: 0.5rem;
-  padding: 0.5rem;
   user-select: none;
+  display: flex;
+  align-items: center;
+}
+
+.locationInfo {
+  flex: 1 0 0;
+  border-right: 1px solid #eee;
+  padding: 0.5rem;
   cursor: pointer;
 }
 
-.location[data-hover="true"] {
+.location[data-hover="true"] .locationInfo {
   background-color: #eee;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.25rem;
+}
+
+.button {
+  flex: 0 0 auto;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.button:hover {
+  background-color: #eee;
+}
+
+.button > div {
+  height: 1.2rem;
+  width: 1.2rem;
+
+  background-color: #333;
+  mask-position: 50%;
+  mask-repeat: no-repeat;
+  mask-size: 100%;
+}
+
+.editButton {
+  mask-image: url("@tabler/icons/outline/pencil.svg");
+}
+
+.deleteButton {
+  mask-image: url("@tabler/icons/outline/trash.svg");
 }
 
 .date {

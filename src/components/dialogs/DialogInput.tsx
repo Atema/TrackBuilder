@@ -1,6 +1,5 @@
-import { ComponentProps, FunctionComponent, RefObject } from "preact";
+import { ComponentProps } from "preact";
 import { forwardRef } from "preact/compat";
-import { useId, useImperativeHandle, useRef } from "preact/hooks";
 import style from "./Dialog.module.css";
 
 export type DialogInputProps = {

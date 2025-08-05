@@ -33,6 +33,15 @@ export const Dialog: FunctionComponent<DialogProps> = ({
     <dialog closedBy="any" class={style.dialog} ref={innerRef}>
       <div class={style.header}>
         <div class={style.title}>{title}</div>
+        <div
+          class={style.closeButton}
+          role="button"
+          onClick={() => {
+            innerRef?.current?.close();
+          }}
+        >
+          <div />
+        </div>
       </div>
       <div class={style.content}>{children}</div>
     </dialog>

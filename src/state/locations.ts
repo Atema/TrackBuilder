@@ -145,3 +145,6 @@ export const calculateTimes = () => {
 
   locations.value = [...locs];
 };
+
+export const fileName = signal("");
+export const fileAuthor = signal("");

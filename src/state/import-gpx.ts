@@ -1,6 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
 import { DateTime } from "luxon";
-import { addLocation, locations } from "./locations";
+import { addLocation, fileAuthor, fileName, locations } from "./locations";
 import { scrollListToLocation } from "./scroll";
 
 const alwaysArray = ["gpx.trk", "gpx.trk.trkseg", "gpx.trk.trkseg.trkpt"];
@@ -19,8 +19,13 @@ export const parseGpx = (contents: string, filename?: string) => {
       throw new Error("No gpx data found in file");
     }
 
-    // const name: string = `${gpx?.metadata?.name}` || filename || "";
-    // const author: string = `${gpx.metadata?.author?.name}` || "";
+    if (!fileName.value) {
+      fileName.value = gpx?.metadata?.name || filename || "";
+    }
+
+    if (!fileAuthor.value) {
+      fileAuthor.value = gpx.metadata?.author?.name || "";
+    }
 
     const points = gpx.trk
       .flatMap((trk: any) => trk.trkseg || [])

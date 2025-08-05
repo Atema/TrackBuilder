@@ -26,6 +26,7 @@ import { MapControlGroup } from "./controls/MapControlGroup";
 import { SaveFileControl } from "./controls/SaveFileControl";
 import { ZoomDataControl } from "./controls/ZoomDataControl";
 import { bgMapStyle } from "./styles/bg-style";
+import { SettingsControl } from "./controls/SettingsControl";
 
 const getEventLoc = (e: MapMouseEvent) => {
   if (e.features?.length && e.features[0].source == "locs") {
@@ -124,6 +125,7 @@ export const MapView = () => {
         <LoadFileControl />
         <SaveFileControl />
         <ClearLocationsControl />
+        <SettingsControl />
       </MapControlGroup>
 
       <MapControlGroup position="top-left">

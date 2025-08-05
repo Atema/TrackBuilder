@@ -31,3 +31,7 @@
 .calculateTimes {
   mask-image: url("@tabler/icons/outline/clock.svg");
 }
+
+.settings {
+  mask-image: url("@tabler/icons/outline/adjustments-horizontal.svg");
+}

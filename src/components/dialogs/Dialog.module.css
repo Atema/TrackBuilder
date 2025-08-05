@@ -100,7 +100,7 @@
   background-color: #333;
   mask-position: 50%;
   mask-repeat: no-repeat;
-  mask-image: url("@tabler/icons/outline/zoom-scan.svg");
+  mask-image: url("@tabler/icons/outline/x.svg");
 }
 
 .closeButton:hover {

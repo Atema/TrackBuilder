@@ -12,7 +12,9 @@ export const LoadFileControl = () => {
       iconClass={style.loadFile}
       onClick={async () => {
         await uploadGpx();
-        map.current?.fitBounds(locationsBounds.value, { padding: 50 });
+        if (locationsBounds.value) {
+          map.current?.fitBounds(locationsBounds.value, { padding: 50 });
+        }
       }}
     />
   );

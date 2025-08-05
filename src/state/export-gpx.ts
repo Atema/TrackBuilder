@@ -1,5 +1,5 @@
 import { XMLBuilder } from "fast-xml-parser";
-import { locations } from "./locations";
+import { fileAuthor, fileName, locations } from "./locations";
 import { DateTime } from "luxon";
 
 const gpxBuilder = new XMLBuilder({
@@ -24,15 +24,15 @@ export const generateGpx = () => {
         "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd",
 
       metadata: {
-        name: "File name",
+        name: fileName.value,
         author: {
-          name: "Author",
+          name: fileAuthor.value,
         },
         time: DateTime.now().toUTC().toISO(),
       },
 
       trk: {
-        name: "Track name",
+        name: fileName.value,
         trkseg: {
           trkpt: locations.value.map((loc) => ({
             $lat: loc.coordinates[1],

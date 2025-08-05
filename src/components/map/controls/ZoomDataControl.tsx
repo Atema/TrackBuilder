@@ -1,7 +1,7 @@
 import { useMap } from "react-map-gl/maplibre";
+import { locationsBounds } from "../../../state/locations";
 import { MapControl } from "./MapControl";
 import style from "./MapControl.module.css";
-import { locationsBounds } from "../../../state/locations";
 
 export const ZoomDataControl = () => {
   const map = useMap();
@@ -9,8 +9,9 @@ export const ZoomDataControl = () => {
     <MapControl
       title="Zoom to data"
       iconClass={style.zoomData}
+      disabled={!locationsBounds.value}
       onClick={() => {
-        map.current?.fitBounds(locationsBounds.value, { padding: 50 });
+        map.current?.fitBounds(locationsBounds.value!, { padding: 50 });
       }}
     />
   );

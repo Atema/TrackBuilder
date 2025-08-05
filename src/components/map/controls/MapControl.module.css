@@ -1,4 +1,4 @@
-.button span {
+.button > .icon {
   display: block;
   width: 100%;
   height: 100%;
@@ -6,6 +6,10 @@
   background: #333;
   mask-position: 50%;
   mask-repeat: no-repeat;
+}
+
+.button:disabled > .icon {
+  background: #ccc;
 }
 
 .zoomData {

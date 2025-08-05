@@ -19,8 +19,10 @@ export const locationsGeoJson = computed(() =>
   )
 );
 
-export const locationsBounds = computed(
-  () => bbox(locationsGeoJson.value) as [number, number, number, number]
+export const locationsBounds = computed(() =>
+  locationsGeoJson?.value.features.length > 0
+    ? (bbox(locationsGeoJson.value) as [number, number, number, number])
+    : undefined
 );
 
 export const locationsGeoJsonLine = computed(() => {

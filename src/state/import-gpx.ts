@@ -34,7 +34,7 @@ export const parseGpx = (contents: string, filename?: string) => {
 
     for (let point of points) {
       id = addLocation({
-        coordinates: [point["$lon"], point["$lat"]],
+        coordinates: [parseFloat(point["$lon"]), parseFloat(point["$lat"])],
         time: point.time ? DateTime.fromISO(point.time) : undefined,
         elevation: point.ele,
       });

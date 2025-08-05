@@ -44,3 +44,40 @@
   flex: 1 0 0;
   padding: 1rem;
 }
+
+.dialogForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dialogInput {
+  display: flex;
+  flex-direction: column;
+}
+
+.dialogInput span {
+  font-size: 0.85rem;
+  margin-bottom: 0.15rem;
+  color: #666;
+}
+
+.dialogInput input {
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+}
+
+.dialogButton {
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+
+  cursor: pointer;
+  background-color: #eee;
+}
+
+.dialogButton:hover,
+.dialogButton:focus {
+  background-color: #ddd;
+}

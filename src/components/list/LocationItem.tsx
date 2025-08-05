@@ -1,7 +1,9 @@
 import { FunctionComponent } from "preact";
+import { useRef } from "preact/hooks";
 import { hoverLocation } from "../../state/hover";
 import { Location, timeZone } from "../../state/locations";
-import { scrollMapToLocation } from "../../state/scroll";
+import { DialogControl } from "../dialogs/Dialog";
+import { LocationDialog } from "../dialogs/LocationDialog";
 import style from "./LocationItem.module.css";
 
 export type LocationProps = {
@@ -10,76 +12,83 @@ export type LocationProps = {
 
 export const LocationItem: FunctionComponent<LocationProps> = ({
   location,
-}) => (
-  <div
-    class={style.location}
-    key={location.id}
-    data-hover={location.id == hoverLocation.value}
-    onMouseEnter={() => {
-      hoverLocation.value = location.id;
-    }}
-    onMouseLeave={() => {
-      hoverLocation.value = "";
-    }}
-    onClick={() => {
-      scrollMapToLocation(...location.coordinates);
-    }}
-  >
-    {location.time ? (
-      <>
-        <div class={style.date}>
-          {location.time.toLocaleString(
-            {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-              timeZone: timeZone.value,
-            },
-            { locale: "en-GB" }
+}) => {
+  const dialogControlRef = useRef<DialogControl>(null);
+  return (
+    <>
+      <div
+        class={style.location}
+        data-hover={location.id == hoverLocation.value}
+        onMouseEnter={() => {
+          hoverLocation.value = location.id;
+        }}
+        onMouseLeave={() => {
+          hoverLocation.value = "";
+        }}
+        onClick={() => {
+          dialogControlRef?.current?.open();
+          // scrollMapToLocation(...location.coordinates);
+        }}
+      >
+        {location.time ? (
+          <>
+            <div class={style.date}>
+              {location.time.toLocaleString(
+                {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  timeZone: timeZone.value,
+                },
+                { locale: "en-GB" }
+              )}
+            </div>
+            <div class={style.time}>
+              {location.time.toLocaleString(
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                  hour12: false,
+                  timeZone: timeZone.value,
+                  // @ts-ignore
+                  fractionalSecondDigits: 3,
+                },
+                { locale: "en-GB" }
+              )}{" "}
+              <span class={style.timezone}>
+                {
+                  location.time
+                    .toLocaleString(
+                      {
+                        day: "numeric",
+                        timeZone: timeZone.value,
+                        timeZoneName: "shortOffset",
+                      },
+                      { locale: "en-GB" }
+                    )
+                    .split(", ")[1]
+                }
+              </span>
+            </div>
+          </>
+        ) : (
+          <div class={style.time}>No time</div>
+        )}
+        <div class={style.coordinates}>
+          {location.coordinates[1]}
+          <span class={style.unit}>°</span>, {location.coordinates[0]}
+          <span class={style.unit}>°</span>
+          {location.elevation && (
+            <>
+              , {location.elevation}
+              <span class={style.unit}>m↑</span>
+            </>
           )}
         </div>
-        <div class={style.time}>
-          {location.time.toLocaleString(
-            {
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              hour12: false,
-              timeZone: timeZone.value,
-              // @ts-ignore
-              fractionalSecondDigits: 3,
-            },
-            { locale: "en-GB" }
-          )}{" "}
-          <span class={style.timezone}>
-            {
-              location.time
-                .toLocaleString(
-                  {
-                    day: "numeric",
-                    timeZone: timeZone.value,
-                    timeZoneName: "shortOffset",
-                  },
-                  { locale: "en-GB" }
-                )
-                .split(", ")[1]
-            }
-          </span>
-        </div>
-      </>
-    ) : (
-      <div class={style.time}>No time</div>
-    )}
-    <div class={style.coordinates}>
-      {location.coordinates[1]}
-      <span class={style.unit}>°</span>, {location.coordinates[0]}
-      <span class={style.unit}>°</span>
-      {location.elevation && (
-        <>
-          , {location.elevation}
-          <span class={style.unit}>m↑</span>
-        </>
-      )}
-    </div>
-  </div>
-);
+      </div>
+
+      <LocationDialog location={location} controlRef={dialogControlRef} />
+    </>
+  );
+};

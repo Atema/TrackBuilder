@@ -1,5 +1,8 @@
 import { FunctionComponent } from "preact";
+import { useRef } from "preact/hooks";
 import { insertPosition, setInsertPosition } from "../../state/locations";
+import { DialogControl } from "../dialogs/Dialog";
+import { LocationDialog } from "../dialogs/LocationDialog";
 import style from "./InserterItem.module.css";
 
 export type InserterItemProps = {
@@ -18,5 +21,19 @@ export const InserterItem: FunctionComponent<InserterItemProps> = ({ id }) => {
       </div>
     );
   }
-  return <div class={style.insert}>Inserting here</div>;
+
+  const dialogControlRef = useRef<DialogControl>(null);
+
+  return (
+    <>
+      <LocationDialog controlRef={dialogControlRef} />
+      <div
+        class={style.insert}
+        role="button"
+        onClick={() => dialogControlRef?.current?.open()}
+      >
+        Inserting here
+      </div>
+    </>
+  );
 };

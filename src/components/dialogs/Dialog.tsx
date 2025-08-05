@@ -4,6 +4,7 @@ import style from "./Dialog.module.css";
 
 export type DialogControl = {
   open: () => void;
+  close: () => void;
 };
 
 export type DialogProps = {
@@ -22,6 +23,9 @@ export const Dialog: FunctionComponent<DialogProps> = ({
   useImperativeHandle(controlRef, () => ({
     open: () => {
       innerRef?.current?.showModal();
+    },
+    close: () => {
+      innerRef?.current?.close();
     },
   }));
 

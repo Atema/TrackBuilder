@@ -3,12 +3,14 @@ import { useRef } from "preact/hooks";
 import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 import { locations } from "../../state/locations";
 import { scrollListTo } from "../../state/scroll";
+import { DialogControl } from "../dialogs/Dialog";
 import { InserterItem } from "./InserterItem";
 import { LocationItem } from "./LocationItem";
 import style from "./LocationsList.module.css";
 
 export const LocationsList = () => {
   const virtRef = useRef<VirtuosoHandle>(null);
+  const dialogControlRef = useRef<DialogControl>(null);
 
   useSignalEffect(() => {
     virtRef.current?.scrollToIndex({

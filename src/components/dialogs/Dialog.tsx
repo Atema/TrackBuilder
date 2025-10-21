@@ -1,4 +1,4 @@
-import { ComponentChildren, FunctionComponent, Ref } from "preact";
+import type { ComponentChildren, FunctionComponent, Ref } from "preact";
 import { useImperativeHandle, useRef } from "preact/hooks";
 import style from "./Dialog.module.css";
 

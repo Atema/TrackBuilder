@@ -1,4 +1,4 @@
-import { ComponentProps } from "preact";
+import type { ComponentProps } from "preact";
 import { forwardRef } from "preact/compat";
 import style from "./Dialog.module.css";
 
@@ -12,5 +12,5 @@ export const DialogInput = forwardRef<HTMLInputElement, DialogInputProps>(
       <span>{label}</span>
       <input ref={ref} {...props} />
     </label>
-  )
+  ),
 );

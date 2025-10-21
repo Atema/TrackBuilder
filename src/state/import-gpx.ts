@@ -11,35 +11,56 @@ const xmlParser = new XMLParser({
   isArray: (_, jpath) => alwaysArray.includes(jpath),
 });
 
+type GpxXml = {
+  gpx?: {
+    metadata?: {
+      name?: string;
+      author?: {
+        name?: string;
+      };
+    };
+    trk?: {
+      trkseg?: {
+        trkpt?: {
+          $lon: string;
+          $lat: string;
+          time: string;
+          ele?: number;
+        }[];
+      }[];
+    }[];
+  };
+};
+
 export const parseGpx = (contents: string, filename?: string) => {
   try {
-    const { gpx } = xmlParser.parse(contents);
+    const { gpx } = xmlParser.parse(contents) as GpxXml;
 
-    if (!gpx) {
+    if (!gpx || !gpx.trk) {
       throw new Error("No gpx data found in file");
     }
 
     if (!fileName.value) {
-      fileName.value = gpx?.metadata?.name || filename || "";
+      fileName.value = gpx.metadata?.name || filename || "";
     }
 
     if (!fileAuthor.value) {
       fileAuthor.value = gpx.metadata?.author?.name || "";
     }
 
-    const points = gpx.trk
-      .flatMap((trk: any) => trk.trkseg || [])
-      .flatMap((seg: any) => seg.trkpt || []);
+    const points = (gpx.trk || [])
+      .flatMap((trk) => trk.trkseg || [])
+      .flatMap((seg) => seg.trkpt || []);
 
-    if (points.length == 0) {
+    if (points.length === 0) {
       throw new Error("No track data found in file");
     }
 
     let id: string = "";
 
-    for (let point of points) {
+    for (const point of points) {
       id = addLocation({
-        coordinates: [parseFloat(point["$lon"]), parseFloat(point["$lat"])],
+        coordinates: [parseFloat(point.$lon), parseFloat(point.$lat)],
         time: point.time ? DateTime.fromISO(point.time) : undefined,
         elevation: point.ele,
       });
@@ -56,7 +77,7 @@ export const uploadGpx = () =>
     if (
       locations.value.length > 0 &&
       !window.confirm(
-        "Are you sure? This will insert the locations in the current position."
+        "Are you sure? This will insert the locations in the current position.",
       )
     ) {
       return;

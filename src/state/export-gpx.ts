@@ -1,6 +1,6 @@
 import { XMLBuilder } from "fast-xml-parser";
-import { fileAuthor, fileName, locations } from "./locations";
 import { DateTime } from "luxon";
+import { fileAuthor, fileName, locations } from "./locations";
 
 const gpxBuilder = new XMLBuilder({
   format: true,

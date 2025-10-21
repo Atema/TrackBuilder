@@ -1,26 +1,28 @@
 {
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview"
-	},
-	"devDependencies": {
-		"@preact/preset-vite": "^2.10.2",
-		"@preact/signals": "^2.3.2",
-		"@tabler/icons": "^3.35.0",
-		"@turf/bbox": "^7.2.0",
-		"@turf/distance": "^7.2.0",
-		"@turf/helpers": "^7.2.0",
-		"@types/luxon": "^3.7.1",
-		"fast-xml-parser": "^5.3.0",
-		"luxon": "^3.7.2",
-		"maplibre-gl": "^5.9.0",
-		"preact": "^10.27.2",
-		"react-map-gl": "^8.1.0",
-		"react-virtuoso": "^4.14.1",
-		"typescript": "^5.9.3",
-		"vite": "^7.1.11"
-	}
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "biome check"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.6",
+    "@preact/preset-vite": "^2.10.2",
+    "@preact/signals": "^2.3.2",
+    "@tabler/icons": "^3.35.0",
+    "@turf/bbox": "^7.2.0",
+    "@turf/distance": "^7.2.0",
+    "@turf/helpers": "^7.2.0",
+    "@types/luxon": "^3.7.1",
+    "fast-xml-parser": "^5.3.0",
+    "luxon": "^3.7.2",
+    "maplibre-gl": "^5.9.0",
+    "preact": "^10.27.2",
+    "react-map-gl": "^8.1.0",
+    "react-virtuoso": "^4.14.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.11"
+  }
 }

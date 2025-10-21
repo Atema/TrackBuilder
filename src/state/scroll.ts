@@ -8,9 +8,9 @@ export const scrollListTo = signal({
 export const scrollMapTo = signal<[number, number]>();
 
 export const scrollListToLocation = (id: string) => {
-  const index = locations.value.findIndex((l) => l.id == id);
+  const index = locations.value.findIndex((l) => l.id === id);
 
-  if (index != -1) {
+  if (index !== -1) {
     scrollListTo.value = {
       pos: 2 * index + 1,
     };

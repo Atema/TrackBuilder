@@ -1,8 +1,8 @@
 import { IANAZone } from "luxon";
-import { FunctionComponent, RefObject } from "preact";
+import type { FunctionComponent, RefObject } from "preact";
 import { useRef } from "preact/hooks";
 import { fileAuthor, fileName, timeZone } from "../../state/locations";
-import { Dialog, DialogControl } from "./Dialog";
+import { Dialog, type DialogControl } from "./Dialog";
 import style from "./Dialog.module.css";
 import { DialogInput } from "./DialogInput";
 

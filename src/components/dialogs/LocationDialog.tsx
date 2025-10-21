@@ -1,10 +1,14 @@
-import { FunctionComponent, Ref, RefObject } from "preact";
-import { addLocation, Location, updateLocation } from "../../state/locations";
-import { Dialog, DialogControl } from "./Dialog";
+import { DateTime } from "luxon";
+import type { FunctionComponent, RefObject } from "preact";
 import { useRef } from "preact/hooks";
+import {
+  addLocation,
+  type Location,
+  updateLocation,
+} from "../../state/locations";
+import { Dialog, type DialogControl } from "./Dialog";
 import style from "./Dialog.module.css";
 import { DialogInput } from "./DialogInput";
-import { DateTime } from "luxon";
 
 export type LocationDialogProps = {
   location?: Location;
@@ -35,7 +39,7 @@ export const LocationDialog: FunctionComponent<LocationDialogProps> = ({
               longitudeRef?.current?.valueAsNumber || 0,
               latitudeRef?.current?.valueAsNumber || 0,
             ] as [number, number],
-            elevation: isNaN(elevationRef?.current?.valueAsNumber || NaN)
+            elevation: Number.isNaN(elevationRef?.current?.valueAsNumber ?? NaN)
               ? undefined
               : elevationRef?.current?.valueAsNumber,
             time: timeRef?.current?.value

@@ -1,8 +1,8 @@
 import { batch, computed, signal } from "@preact/signals";
+import { bbox } from "@turf/bbox";
 import { distance } from "@turf/distance";
 import { featureCollection, lineString, point } from "@turf/helpers";
 import { DateTime } from "luxon";
-import { bbox } from "@turf/bbox";
 
 export type Location = {
   id: string;
@@ -15,14 +15,14 @@ export const locations = signal<Location[]>([]);
 
 export const locationsGeoJson = computed(() =>
   featureCollection(
-    locations.value.map(({ id, coordinates }) => point(coordinates, { id }))
-  )
+    locations.value.map(({ id, coordinates }) => point(coordinates, { id })),
+  ),
 );
 
 export const locationsBounds = computed(() =>
   locationsGeoJson?.value.features.length > 0
     ? (bbox(locationsGeoJson.value) as [number, number, number, number])
-    : undefined
+    : undefined,
 );
 
 export const locationsGeoJsonLine = computed(() => {
@@ -64,23 +64,23 @@ export const addLocation = (location: Omit<Location, "id">) => {
 
 export const removeLocation = (id: string) => {
   batch(() => {
-    if (insertPosition.value == id) {
+    if (insertPosition.value === id) {
       insertPosition.value =
         locations.value[insertIndex.value - 2]?.id || "start";
     }
 
-    locations.value = locations.value.filter((loc) => loc.id != id);
+    locations.value = locations.value.filter((loc) => loc.id !== id);
   });
 };
 
 export const updateLocation = (id: string, location: Partial<Location>) => {
   locations.value = locations.value.map((loc) =>
-    loc.id == id
+    loc.id === id
       ? {
           ...loc,
           ...location,
         }
-      : loc
+      : loc,
   );
 };
 
@@ -89,7 +89,7 @@ export const timeZone = signal(DateTime.now().zoneName);
 export const insertPosition = signal("start");
 
 const insertIndex = computed(
-  () => locations.value.findIndex((loc) => loc.id == insertPosition.value) + 1
+  () => locations.value.findIndex((loc) => loc.id === insertPosition.value) + 1,
 );
 
 export const setInsertPosition = (id: string) => {
@@ -132,8 +132,8 @@ export const calculateTimes = () => {
         time: locs[j - 1].time!.plus(
           Math.round(
             (timeDiff / totalDist) *
-              distance(locs[j].coordinates, locs[j - 1].coordinates)
-          )
+              distance(locs[j].coordinates, locs[j - 1].coordinates),
+          ),
         ),
       };
 

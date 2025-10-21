@@ -1,10 +1,10 @@
-import { DateTime } from "luxon";
-import { FunctionComponent } from "preact";
+import type { DateTime } from "luxon";
+import type { FunctionComponent } from "preact";
 import { useMemo, useRef } from "preact/hooks";
 import { hoverLocation } from "../../state/hover";
-import { Location, removeLocation, timeZone } from "../../state/locations";
+import { type Location, removeLocation, timeZone } from "../../state/locations";
 import { scrollMapToLocation } from "../../state/scroll";
-import { DialogControl } from "../dialogs/Dialog";
+import type { DialogControl } from "../dialogs/Dialog";
 import { LocationDialog } from "../dialogs/LocationDialog";
 import style from "./LocationItem.module.css";
 
@@ -17,11 +17,11 @@ const timeToStrings = (dt: DateTime) => {
         second: "2-digit",
         hour12: false,
         timeZone: timeZone.value,
-        // @ts-ignore
+        // @ts-expect-error Not included in types
         fractionalSecondDigits: 3,
         timeZoneName: "shortOffset",
       },
-      { locale: "en-GB" }
+      { locale: "en-GB" },
     )
     .split(" ");
 
@@ -33,7 +33,7 @@ const timeToStrings = (dt: DateTime) => {
         day: "numeric",
         timeZone: timeZone.value,
       },
-      { locale: "en-GB" }
+      { locale: "en-GB" },
     ),
     time,
     zone,
@@ -50,14 +50,14 @@ export const LocationItem: FunctionComponent<LocationProps> = ({
   const dialogControlRef = useRef<DialogControl>(null);
   const timeStrings = useMemo(
     () => location.time && timeToStrings(location.time),
-    [location.time]
+    [location.time],
   );
 
   return (
     <>
       <div
         class={style.location}
-        data-hover={location.id == hoverLocation.value}
+        data-hover={location.id === hoverLocation.value}
         onMouseEnter={() => {
           hoverLocation.value = location.id;
         }}

@@ -1,4 +1,4 @@
-import { FunctionComponent } from "preact";
+import type { FunctionComponent } from "preact";
 import style from "./MapControl.module.css";
 
 export type MapControlProps = {

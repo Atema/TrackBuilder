@@ -1,7 +1,11 @@
-import { Signal, useSignal } from "@preact/signals";
-import { FunctionalComponent } from "preact";
+import { type Signal, useSignal } from "@preact/signals";
+import type { FunctionalComponent } from "preact";
 import { createPortal } from "preact/compat";
-import { ControlPosition, IControl, useControl } from "react-map-gl/maplibre";
+import {
+  type ControlPosition,
+  type IControl,
+  useControl,
+} from "react-map-gl/maplibre";
 
 class Control implements IControl {
   #container: Signal<HTMLElement | undefined>;

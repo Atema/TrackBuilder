@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": {
+    "includes": ["src/**", "*.json", "*.ts", ".vscode/**", ".github/**"]
+  },
+  "formatter": {
+    "indentStyle": "space"
+  },
+  "linter": {
+    "domains": {
+      "project": "recommended"
+    },
+    "rules": {
+      "a11y": "off",
+      "style": {
+        "noNonNullAssertion": "off"
+      }
+    }
+  }
+}

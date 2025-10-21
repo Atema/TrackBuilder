@@ -4,9 +4,9 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useRef } from "preact/hooks";
 import {
   Layer,
-  Map,
-  MapMouseEvent,
-  MapRef,
+  Map as MapLibre,
+  type MapMouseEvent,
+  type MapRef,
   NavigationControl,
   Source,
 } from "react-map-gl/maplibre";
@@ -24,12 +24,12 @@ import { ClearLocationsControl } from "./controls/ClearLocationsControl";
 import { LoadFileControl } from "./controls/LoadFileControl";
 import { MapControlGroup } from "./controls/MapControlGroup";
 import { SaveFileControl } from "./controls/SaveFileControl";
+import { SettingsControl } from "./controls/SettingsControl";
 import { ZoomDataControl } from "./controls/ZoomDataControl";
 import { bgMapStyle } from "./styles/bg-style";
-import { SettingsControl } from "./controls/SettingsControl";
 
 const getEventLoc = (e: MapMouseEvent) => {
-  if (e.features?.length && e.features[0].source == "locs") {
+  if (e.features?.length && e.features[0].source === "locs") {
     return e.features[0].id as string;
   }
 };
@@ -71,7 +71,7 @@ const onMouseLeave = (e: MapMouseEvent) => {
 const onMouseDown = (e: MapMouseEvent) => {
   const id = getEventLoc(e);
 
-  if (id && e.originalEvent.button == 1) {
+  if (id && e.originalEvent.button === 1) {
     e.preventDefault();
 
     const onMove = (e: MapMouseEvent) => {
@@ -100,7 +100,7 @@ export const MapView = () => {
   });
 
   return (
-    <Map
+    <MapLibre
       ref={mapRef}
       mapStyle={bgMapStyle}
       initialViewState={{
@@ -184,6 +184,6 @@ export const MapView = () => {
           }}
         />
       </Source>
-    </Map>
+    </MapLibre>
   );
 };

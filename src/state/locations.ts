@@ -43,30 +43,33 @@ export const locationsGeoJsonLine = computed(() => {
   ]);
 });
 
-export const addLocation = (location: Omit<Location, "id">) => {
-  const id = crypto.randomUUID();
+export const addLocations = (locs: Omit<Location, "id">[]) => {
+  const insertLocs = locs.map((loc) => ({
+    id: crypto.randomUUID(),
+    ...loc,
+  }));
 
   batch(() => {
     locations.value = [
       ...locations.value.slice(0, insertIndex.value),
-      {
-        id,
-        ...location,
-      },
+      ...insertLocs,
       ...locations.value.slice(insertIndex.value),
     ];
 
-    insertPosition.value = id;
+    insertPosition.value = insertLocs[insertLocs.length - 1].id;
   });
 
-  return id;
+  return insertLocs[insertLocs.length - 1].id;
 };
+
+export const addLocation = (location: Omit<Location, "id">) =>
+  addLocations([location]);
 
 export const removeLocation = (id: string) => {
   batch(() => {
     if (insertPosition.value === id) {
       insertPosition.value =
-        locations.value[insertIndex.value - 2]?.id || "start";
+        locations.value[insertIndex.value - 2].id || "start";
     }
 
     locations.value = locations.value.filter((loc) => loc.id !== id);

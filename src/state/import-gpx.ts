@@ -1,6 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
 import { DateTime } from "luxon";
-import { addLocation, fileAuthor, fileName, locations } from "./locations";
+import { addLocations, fileAuthor, fileName, locations } from "./locations";
 import { scrollListToLocation } from "./scroll";
 
 const alwaysArray = ["gpx.trk", "gpx.trk.trkseg", "gpx.trk.trkseg.trkpt"];
@@ -56,15 +56,13 @@ export const parseGpx = (contents: string, filename?: string) => {
       throw new Error("No track data found in file");
     }
 
-    let id: string = "";
-
-    for (const point of points) {
-      id = addLocation({
+    const id = addLocations(
+      points.map((point) => ({
         coordinates: [parseFloat(point.$lon), parseFloat(point.$lat)],
         time: point.time ? DateTime.fromISO(point.time) : undefined,
         elevation: point.ele,
-      });
-    }
+      })),
+    );
 
     scrollListToLocation(id);
   } catch (e) {

@@ -10,6 +10,8 @@ export type InserterItemProps = {
 };
 
 export const InserterItem: FunctionComponent<InserterItemProps> = ({ id }) => {
+  const dialogControlRef = useRef<DialogControl>(null);
+
   if (insertPosition.value !== id) {
     return (
       <div
@@ -21,8 +23,6 @@ export const InserterItem: FunctionComponent<InserterItemProps> = ({ id }) => {
       </div>
     );
   }
-
-  const dialogControlRef = useRef<DialogControl>(null);
 
   return (
     <>

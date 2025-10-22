@@ -8,7 +8,8 @@
   },
   "linter": {
     "domains": {
-      "project": "recommended"
+      "project": "recommended",
+      "react": "recommended"
     },
     "rules": {
       "a11y": "off",

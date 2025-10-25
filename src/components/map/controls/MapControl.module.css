@@ -28,6 +28,14 @@
   mask-image: url("@tabler/icons/outline/trash-x.svg");
 }
 
+.undo {
+  mask-image: url("@tabler/icons/outline/arrow-back-up.svg");
+}
+
+.redo {
+  mask-image: url("@tabler/icons/outline/arrow-forward-up.svg");
+}
+
 .calculateTimes {
   mask-image: url("@tabler/icons/outline/clock.svg");
 }

@@ -3,6 +3,7 @@ import { bbox } from "@turf/bbox";
 import { distance } from "@turf/distance";
 import { featureCollection, lineString, point } from "@turf/helpers";
 import { DateTime } from "luxon";
+import { saveUndoState } from "./history";
 
 export type Location = {
   id: string;
@@ -44,6 +45,8 @@ export const locationsGeoJsonLine = computed(() => {
 });
 
 export const addLocations = (locs: Omit<Location, "id">[]) => {
+  saveUndoState();
+
   const insertLocs = locs.map((loc) => ({
     id: crypto.randomUUID(),
     ...loc,
@@ -66,6 +69,8 @@ export const addLocation = (location: Omit<Location, "id">) =>
   addLocations([location]);
 
 export const removeLocation = (id: string) => {
+  saveUndoState();
+
   batch(() => {
     if (insertPosition.value === id) {
       insertPosition.value =
@@ -77,6 +82,8 @@ export const removeLocation = (id: string) => {
 };
 
 export const updateLocation = (id: string, location: Partial<Location>) => {
+  saveUndoState();
+
   locations.value = locations.value.map((loc) =>
     loc.id === id
       ? {
@@ -96,17 +103,21 @@ const insertIndex = computed(
 );
 
 export const setInsertPosition = (id: string) => {
+  saveUndoState();
+
   insertPosition.value = id;
 };
 
 export const clearLocations = () => {
-  if (window.confirm("Are you sure to clear all locations?")) {
-    insertPosition.value = "start";
-    locations.value = [];
-  }
+  saveUndoState();
+
+  insertPosition.value = "start";
+  locations.value = [];
 };
 
 export const calculateTimes = () => {
+  saveUndoState();
+
   const locs = locations.value;
 
   for (let i = 0; i < locs.length - 1; i++) {

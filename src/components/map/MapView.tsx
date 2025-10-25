@@ -25,6 +25,7 @@ import { LoadFileControl } from "./controls/LoadFileControl";
 import { MapControlGroup } from "./controls/MapControlGroup";
 import { SaveFileControl } from "./controls/SaveFileControl";
 import { SettingsControl } from "./controls/SettingsControl";
+import { UndoRedoControls } from "./controls/UndoRedoControls";
 import { ZoomDataControl } from "./controls/ZoomDataControl";
 import { bgMapStyle } from "./styles/bg-style";
 
@@ -127,6 +128,8 @@ export const MapView = () => {
         <ClearLocationsControl />
         <SettingsControl />
       </MapControlGroup>
+
+      <UndoRedoControls />
 
       <MapControlGroup position="top-left">
         <CalculateTimesControl />

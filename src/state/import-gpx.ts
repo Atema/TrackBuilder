@@ -1,6 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
 import { DateTime } from "luxon";
-import { addLocations, fileAuthor, fileName, locations } from "./locations";
+import { addLocations, fileAuthor, fileName } from "./locations";
 import { scrollListToLocation } from "./scroll";
 
 const alwaysArray = ["gpx.trk", "gpx.trk.trkseg", "gpx.trk.trkseg.trkpt"];
@@ -72,15 +72,6 @@ export const parseGpx = (contents: string, filename?: string) => {
 
 export const uploadGpx = () =>
   new Promise<void>((resolve, reject) => {
-    if (
-      locations.value.length > 0 &&
-      !window.confirm(
-        "Are you sure? This will insert the locations in the current position.",
-      )
-    ) {
-      return;
-    }
-
     const input = document.createElement("input");
     input.type = "file";
     input.accept = "application/gpx+xml";

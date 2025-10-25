@@ -16,6 +16,7 @@ import {
   locationsGeoJson,
   locationsGeoJsonLine,
   removeLocation,
+  setInsertPosition,
   updateLocation,
 } from "../../state/locations";
 import { scrollListToLocation, scrollMapTo } from "../../state/scroll";
@@ -75,18 +76,29 @@ const onMouseDown = (e: MapMouseEvent) => {
   if (id && e.originalEvent.button === 1) {
     e.preventDefault();
 
+    e.target.once("mouseup", (ee) => {
+      if (
+        e.originalEvent.x === ee.originalEvent.x &&
+        e.originalEvent.y === ee.originalEvent.y
+      ) {
+        setInsertPosition(id);
+      }
+    });
+  }
+
+  if (id && e.originalEvent.button === 0) {
+    e.preventDefault();
+
     const onMove = (e: MapMouseEvent) => {
       updateLocation(id, {
         coordinates: [round(e.lngLat.lng, 7), round(e.lngLat.lat, 7)],
       });
     };
 
-    const onUp = () => {
-      e.target.off("mousemove", onMove);
-    };
-
     e.target.on("mousemove", onMove);
-    e.target.once("mouseup", onUp);
+    e.target.once("mouseup", () => {
+      e.target.off("mousemove", onMove);
+    });
     e.target.getCanvas().style.cursor = "grab";
   }
 };

@@ -36,7 +36,7 @@ export const parseGpx = (contents: string, filename?: string) => {
   try {
     const { gpx } = xmlParser.parse(contents) as GpxXml;
 
-    if (!gpx || !gpx.trk) {
+    if (!gpx?.trk) {
       throw new Error("No gpx data found in file");
     }
 

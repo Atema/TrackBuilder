@@ -1,0 +1,43 @@
+name: Build & deploy
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-deploy
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+
+    environment:
+      name: deploy
+      url: ${{ vars.HTTP_URL }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/setup@v3
+        with:
+          version: latest
+          runtime: node@26
+          cache: true
+          require-lockfile: true
+
+      - name: Build
+        run: node --run build
+
+      - name: Install LFTP
+        run: sudo apt-get install lftp
+
+      - name: Deploy over SFTP
+        run: lftp -e "set sftp:auto-confirm yes; mirror --reverse --delete --verbose dist/ html/; bye" ${{ secrets.SFTP_URL}}
